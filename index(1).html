@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Webcam</title>
+    
+    <style>
+        body {
+            margin: 50px;
+            display: flex;
+            flex-direction:column;
+            align-items:center;
+        }
+        #container {
+            top:0;
+            margin: 0px auto;
+            width: 500px;
+            height: 375px;
+            border: 10px #333 solid; 
+        }
+        #videoElement {
+            width: 500px;
+            height: 375px;
+            background-color: #666;
+        }
+        #findDetails {text-align: center;color: darkslategray;}
+    </style>
+</head>
+<body>
+    <div id="container">
+        <video autoplay="true" id="videoElement"></video>
+    </div>    
+    <div id="findDetails">
+        <h1>Find by ID</h1>
+        <input id="findID" type="text"> <br><br>
+        <button id="find">FIND</button>
+        <h3 id="findName" type="text"></h3>
+        <h3 id="findAge" type="number"></h3> <br><br>
+    </div>
+    <script>
+        let video = document.querySelector("#videoElement");
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                video.srcObject = stream;       
+            })
+            .catch(function(error) {
+                console.log("Something went wrong");
+            });
+        } else {
+            console.log("getUserMedia not supported");
+        }
+    </script>
+        <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+           apiKey: "AIzaSyA679YbOQ86DXu6I86UK2un9dZ6_S0QmeE",
+           authDomain: "thirdeye-88d12.firebaseapp.com",
+           projectId: "thirdeye-88d12",
+           databaseURL:"https://thirdeye-88d12-default-rtdb.firebaseio.com/",
+           storageBucket: "thirdeye-88d12.appspot.com",
+           messagingSenderId: "102399511344",
+           appId: "1:102399511344:web:94c126c52fa2c275d256f5"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+          
+        
+            import { getDatabase, ref, get, set, child, update, remove } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+            
+    
+            const db = getDatabase();
+    
+            var findID = document.querySelector("#findID");
+            var findName = document.querySelector("#findName");
+            var findAge = document.querySelector("#findAge");
+          
+            var findBtn = document.querySelector("#find");
+    
+    
+            function FindData() {
+                const dbref = ref(db);
+    
+                get(child(dbref, "data/" + findID.value))
+                .then((snapshot)=>{
+                    if(snapshot.exists()){
+                        findName.innerHTML = "Name: " + snapshot.val().Name;
+                    } else {
+                        alert("No data found");
+                    }
+                })
+                .catch((error)=>{
+                    alert(error)
+                })
+                
+            }
+            
+            findBtn.addEventListener('click', FindData);
+    
+          </script>
+    
+</body>
+  
+</html>
+
+
